@@ -2,103 +2,97 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use yii\db\ActiveRecord;
+use yii\db\Expression;
+use mdm\admin\components\UserStatus;
+
+class User extends \mdm\admin\models\User implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_CHANGE_PASSWORD = 'change_password';
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
+    public $password_old;
+    public $password_confirm;
+    public $password_new;
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public static function tableName()
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return '{{%user}}';
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function rules()
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
+        return [
+            [['username', 'password_hash', 'password_confirm', 'email'], 'required', 'on' => self::SCENARIO_CREATE,],
+            [['username', 'email', 'status'], 'required', 'on' => self::SCENARIO_UPDATE,],
+            [['password_old', 'password_confirm', 'password_new',], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD,],
+            [['password_confirm'], 'compare', 'compareAttribute' => 'password_hash', 'on' => self::SCENARIO_CREATE,],
+            [['password_confirm'], 'compare', 'compareAttribute' => 'password_new', 'on' => self::SCENARIO_CHANGE_PASSWORD,],
+            [['password_old'], 'checkOldPassword'],
+            [['email'], 'email'],
+            [['status'], 'in', 'range' => [UserStatus::ACTIVE, UserStatus::INACTIVE]],
+            [['username', 'email'], 'unique', 'on' => self::SCENARIO_CREATE],
+            [['username'], 'string', 'max' => 100],
+            [['password_hash', 'password_confirm', 'password_new', 'password_old'], 'string', 'max' => 255, 'min' => 6],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID User',
+            'username' => 'Username',
+            'password_hash' => 'Password',
+            'password_old' => 'Old Password',
+            'password_new' => 'New Password',
+            'password_confirm' => 'Confirm Password',
+            'status' => 'Status',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_date', 'updated_date'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_date'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    public function checkOldPassword() {
+        $user = Yii::$app->user->identity;
+        if (!$user || !$user->validatePassword($this->password_old)) {
+            $this->addError('password_old', 'Incorrect Old Password.');
+        }
+    }
+
+    public function changePassword()
+    {
+        if ($this->validate()) {
+            /* @var $user User */
+            $user = Yii::$app->user->identity;
+            $user->setPassword($this->password_new);
+            $user->generateAuthKey();
+            if ($user->save()) {
+                return true;
             }
         }
 
-        return null;
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
-    {
-        return $this->authKey;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return false;
     }
 }

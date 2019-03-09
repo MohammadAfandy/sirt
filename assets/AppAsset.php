@@ -17,15 +17,17 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'plugins/datatables/dataTables.bootstrap.min.css',
+        'css/custom.css',
     ];
     public $js = [
+        'plugins/datatables/dataTables.bootstrap.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'dmstr\web\AdminLteAsset',
     ];
 }

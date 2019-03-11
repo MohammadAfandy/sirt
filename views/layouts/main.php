@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 app\assets\AppAsset::register($this);
 
-// app\assets\AdminLteAsset::register($this);
+app\assets\DataTableAsset::register($this);
 
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 ?>
@@ -41,7 +41,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
         ) ?>
 
     </div>
-    <div class="loading" style="display: none;">
+    <div class="loading">
         <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
     </div>
 
@@ -53,27 +53,31 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
             $(".loading").show();
             $(".box-body").addClass("hidden-background");
         }
+
         $(document).on("submit", "form", function() {
             $(this).find(":submit").attr("disabled", true).html("<span class=\'fa fa-spin fa-spinner\'></span>Proses");
         });
 
-        // $(".dataTable").dataTable({
-        //     "pageLength": 20,
-        //     "bLengthChange": false,
-        //     "scrollX": true
-        // });
-
-        // $(".dataTable thead tr").clone(true).appendTo(".dataTable thead");
-        // $(".dataTable thead tr:eq(1) th").each(function (i) {
-        //     var title = $(this).text();
-        //     $(this).html("<input type="text" placeholder="Search "+title+"" />");
-
-        //     $("input", this ).on("keyup change", function () {
-        //         if (data_table.column(i).search() !== this.value) {
-        //             data_table.column(i).search(this.value).draw();
-        //         }
-        //     });
-        // });
+        $(".dataTable").dataTable({
+            // "dom": "Bfrtip",
+            // "buttons": [
+            //     "excel", "pdf"
+            // ],
+            // "language": {
+            //     "emptyTable":     "Data Tidak Ditemukan",
+            //     "info":           "Menampilkan _START_-_END_ dari _TOTAL_ data",
+            //     "infoFiltered":   "(filtered from _MAX_ total entries)",
+            //     "search":         "Search:",
+            //     "zeroRecords":    "Data Pencarian Tidak Ditemukan",
+            //     "paginate": {
+            //         "first":      "Pertama",
+            //         "last":       "Terakhir",
+            //         "next":       "Berikutnya",
+            //         "previous":   "Sebelumnya",
+            //     },
+            // },
+            "pageLength": 20,
+        });
 
         ',
         \yii\web\View::POS_READY,

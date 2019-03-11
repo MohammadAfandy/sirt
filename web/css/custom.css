@@ -1,0 +1,47 @@
+.loading {
+    display: none;
+    z-index: 9999;
+    position:
+    absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.hidden-background {
+    background: #fff;
+    pointer-events: none;
+    opacity:0.4;
+    filter: alpha(opacity = 50)
+}
+
+#modal_foto .modal-body {
+	/*position: relative;*/
+	display:block;
+	overflow-y: auto;
+	max-height: 600px;
+}
+
+.foto-ktp {
+	width: 100%;
+	max-height: 500px;
+	height: 100%;
+}
+
+.fieldset{
+    padding: .35em .625em .75em;
+    margin: 0 2px;
+    border: 1px solid #c0c0c0;
+    border-radius: 10px;
+}
+.fieldset legend{
+    padding: 2px 1em;
+    width: auto !important;
+    min-height: 1.4em;
+    margin-bottom: 20px;
+    font-size: 18px;
+    line-height: inherit;
+    color: #333;
+    border: 1px solid #c0c0c0;
+    background-color: rgba(167, 26, 26, 0);
+    border-radius: 1em;
+}

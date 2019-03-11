@@ -6,6 +6,7 @@ $params = require __DIR__ . '/params.php';
 $config = [
     'id' => 'sirt',
     'name' => 'Sistem Informasi RT',
+    'language' => 'id',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [

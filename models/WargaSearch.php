@@ -18,7 +18,7 @@ class WargaSearch extends Warga
     {
         return [
             [['id', 'jenis_kelamin', 'status_kawin', 'id_keluarga'], 'integer'],
-            [['nama_warga', 'no_ktp', 'no_kk', 'agama', 'tempat_lahir', 'tgl_lahir', 'alamat', 'no_hp', 'email', 'pekerjaan', 'pendidikan', 'path_ktp', 'created_date', 'updated_date'], 'safe'],
+            [['nama_warga', 'no_ktp', 'no_kk', 'agama', 'tempat_lahir', 'tgl_lahir', 'alamat', 'no_hp', 'id_rt', 'id_rw', 'email', 'pekerjaan', 'pendidikan', 'path_ktp', 'created_date', 'updated_date'], 'safe'],
         ];
     }
 
@@ -62,6 +62,8 @@ class WargaSearch extends Warga
             'jenis_kelamin' => $this->jenis_kelamin,
             'tgl_lahir' => $this->tgl_lahir,
             'status_kawin' => $this->status_kawin,
+            'id_rt' => $this->id_rt,
+            'id_rw' => $this->id_rw,
             'id_keluarga' => $this->id_keluarga,
             'created_date' => $this->created_date,
             'updated_date' => $this->updated_date,

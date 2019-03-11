@@ -40,10 +40,10 @@ use app\models\Warga;
                     'language' => 'id',
                     'options' => ['class' => 'form-control datepicker', 'readonly' => true],
                     'clientOptions' => [
-
                         'changeYear' => true,
                         'changeMonth' => true,
                         'yearRange' => '1900:now',
+                        'maxDate' => 'now',
                     ],
                 ]) ?>
             </div>
@@ -83,7 +83,7 @@ use app\models\Warga;
 
         <div class="form-group">
             <div class="col-sm-5 pull-right">
-                <?= Html::a('Kembali', ['index'], ['class' => 'btn btn-danger']) ?>
+                <?= Html::a('Kembali', Yii::$app->request->referrer ? Yii::$app->request->referrer : ['index'], ['class' => 'btn btn-danger']) ?>
                 <?= Html::submitButton(($model->isNewRecord) ? 'Tambah' : 'Update', ['class' => 'btn btn-success']) ?>
             </div>
         </div>

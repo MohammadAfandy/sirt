@@ -77,6 +77,9 @@ class Warga extends \yii\db\ActiveRecord
     {
         return [
             [['nama_warga', 'jenis_kelamin', 'agama', 'tempat_lahir', 'tgl_lahir', 'pekerjaan', 'pendidikan', 'status_kawin', 'id_rt', 'id_rw'], 'required'],
+            [['nama_warga', 'tempat_lahir', 'alamat', 'no_ktp', 'email', 'no_hp'], 'trim'],
+            [['no_ktp', 'no_kk', 'alamat', 'no_ktp', 'no_hp', 'email', 'path_ktp', 'id_keluarga'], 'default', 'value' => NULL],
+            [['no_ktp'], 'unique'],
             [['jenis_kelamin', 'id_keluarga'], 'integer'],
             [['tgl_lahir', 'created_date', 'updated_date'], 'safe'],
             [['alamat', 'path_ktp'], 'string'],
@@ -105,7 +108,7 @@ class Warga extends \yii\db\ActiveRecord
             'jenis_kelamin' => 'Jenis Kelamin',
             'agama' => 'Agama',
             'tempat_lahir' => 'Tempat Lahir',
-            'tgl_lahir' => 'Tgl Lahir',
+            'tgl_lahir' => 'Tanggal Lahir',
             'alamat' => 'Alamat',
             'id_rt' => 'RT',
             'id_rw' => 'RW',
@@ -114,7 +117,7 @@ class Warga extends \yii\db\ActiveRecord
             'pekerjaan' => 'Pekerjaan',
             'pendidikan' => 'Pendidikan Terakhir',
             'status_kawin' => 'Status Perkawinan',
-            'path_ktp' => 'Upload KTP',
+            'path_ktp' => 'Foto KTP',
             'id_keluarga' => 'ID Keluarga',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',

@@ -15,7 +15,7 @@ use mdm\admin\components\Helper;
         $menuItems = [
             ['label' => 'Home', 'url' => ['/site/index'], 'icon' => 'home'],
             ['label' => 'Warga', 'url' => ['/warga/index'], 'icon' => 'user'],
-            // ['label' => 'Alternatif', 'url' => ['/alternatif/index'], 'icon' => 'user'],
+            ['label' => 'Rt', 'url' => ['/rt/index'], 'icon' => 'random'],
             // ['label' => 'Kriteria', 'url' => ['/kriteria/index'], 'icon' => 'random'],
             // ['label' => 'Penilaian', 'url' => ['/penilaian/index'], 'icon' => 'bar-chart'],
             // ['label' => 'Hasil', 'url' => ['/hasil/index'], 'icon' => 'pie-chart'],

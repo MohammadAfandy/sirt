@@ -98,7 +98,7 @@ class WargaController extends Controller
             }
             // var_dump($model->attributes);die();
             if ($model->save()) {
-                return $this->redirect(['index']);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         }
 
@@ -121,12 +121,45 @@ class WargaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $list_kk = Keluarga::find()->select(['no_kk as value', 'no_kk as label','id as id'])->asArray()->all();
+        $list_rt = Rt::find()->indexBy('id')->all();
+        $list_rw = Rw::find()->indexBy('id')->all();
+
+        $data_post = Yii::$app->request->post();
+        if ($data_post) {
+            $current_image = $model->path_ktp;
+            $model->load($data_post);
+            $upload = UploadedFile::getInstance($model, 'path_ktp');
+
+            if ($upload && $model->path_ktp !== $current_image && $model->validate()) {
+                $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
+                $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
+
+                // $dir_upload = \yii\helpers\Url::base(true) . '/uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
+                $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
+
+                if (!is_dir($dir_upload)) {
+                    if(is_writable('uploads/')) {
+                        mkdir($dir_upload, 0755, true);
+                    }
+                }
+
+                $upload->saveAs($dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension);
+                $model->path_ktp = $dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension;
+            } else {
+                $model->path_ktp = $current_image;
+            }
+
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'list_kk' => $list_kk,
+            'list_rt' => $list_rt,
+            'list_rw' => $list_rw,
         ]);
     }
 

@@ -4,6 +4,11 @@ namespace app\components;
 
 use Yii;
 use kartik\mpdf\Pdf;
+use yii\web\UploadedFile;
+
+use app\models\Warga;
+use app\models\Rt;
+use app\models\Rw;
 /**
  * Class Helpers
  */
@@ -114,7 +119,7 @@ class Helpers extends \yii\base\Component
         $file->send($filename);
         exit();
     }
-
+    
     /**
      * Convert date to date format Indonesia
      * @param string date
@@ -153,6 +158,70 @@ class Helpers extends \yii\base\Component
             
         }
         return $result;
+    }
+
+    /**
+     * Get Jenis Kelamin
+     * @param int id
+     * @return string result
+     */
+    public static function getJenisKelamin($id) 
+    {
+        if ($id === 1) {
+            return 'Laki - Laki';
+        } else if ($id === 2) {
+            return 'Perempuan';
+        }
+
+        return '';
+    }
+
+    /**
+     * Get Nama Warga
+     * @param int id_warga
+     * @return string nama warga
+     */
+    public static function getNamaWarga($id_warga) 
+    {
+        $warga = Warga::findOne($id_warga);
+
+        if (!empty($warga)) {
+            return $warga->nama_warga;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Nama Rt
+     * @param int id_rt
+     * @return string nama Rt
+     */
+    public static function getNamaRt($id_rt) 
+    {
+        $rw = Rt::findOne($id_rt);
+
+        if (!empty($rw)) {
+            return $rw->nama_rt;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Nama RW
+     * @param int id_rw
+     * @return string nama rw
+     */
+    public static function getNamaRw($id_rw) 
+    {
+        $rw = Rw::findOne($id_rw);
+
+        if (!empty($rw)) {
+            return $rw->nama_rw;
+        }
+
+        return null;
     }
 
 }

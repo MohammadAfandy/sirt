@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "tbl_rt".
@@ -39,6 +41,8 @@ class Rt extends \yii\db\ActiveRecord
     {
         return [
             [['nama_rt'], 'required'],
+            [['nama_rt', 'alamat'], 'trim'],
+            [['nama_rt', 'alamat'], 'default', 'value' => NULL],
             [['ketua', 'wakil', 'sekretaris', 'bendahara', 'id_rw'], 'integer'],
             [['seksi', 'path_logo'], 'string'],
             [['awal_periode', 'akhir_periode', 'created_date', 'updated_date'], 'safe'],
@@ -54,19 +58,33 @@ class Rt extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'nama_rt' => 'Nama Rt',
-            'ketua' => 'Ketua',
-            'wakil' => 'Wakil',
+            'nama_rt' => 'RT',
+            'ketua' => 'Ketua RT',
+            'wakil' => 'Wakil Ketua RT',
             'sekretaris' => 'Sekretaris',
             'bendahara' => 'Bendahara',
             'seksi' => 'Seksi',
-            'alamat' => 'Alamat',
+            'alamat' => 'Alamat Sekretariat',
             'awal_periode' => 'Awal Periode',
             'akhir_periode' => 'Akhir Periode',
-            'id_rw' => 'Id Rw',
-            'path_logo' => 'Path Logo',
+            'id_rw' => 'RW',
+            'path_logo' => 'Foto Logo',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_date', 'updated_date'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_date'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
         ];
     }
 }

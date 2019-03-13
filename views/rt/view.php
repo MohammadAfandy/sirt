@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 use app\components\Helpers;
-/* @var $this yii\web\View */
-/* @var $model app\models\Rt */
 
+$nama_rw = Helpers::getNamaRw($model->id_rw);
 $this->title = $model->nama_rt;
 $this->params['breadcrumbs'][] = ['label' => 'RT', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $nama_rw, 'url' => ['index', 'id' => $model->id_rw]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

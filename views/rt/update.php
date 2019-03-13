@@ -5,11 +5,11 @@ use app\components\Helpers;
 /* @var $this yii\web\View */
 /* @var $model app\models\Rt */
 
-$nama_rw = Helpers::getNamaRw($id_rw);
+$nama_rw = Helpers::getNamaRw($model->id_rw);
 
 $this->title = 'Update RT: ' . $model->nama_rt;
 $this->params['breadcrumbs'][] = ['label' => 'RT', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $nama_rw, 'url' => ['index', 'id' => $id_rw]];
+$this->params['breadcrumbs'][] = ['label' => $nama_rw, 'url' => ['index', 'id' => $model->id_rw]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="box-header with-border">

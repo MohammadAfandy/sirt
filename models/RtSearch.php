@@ -5,7 +5,8 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Rt;
-
+use app\models\Warga;
+use yii\helpers\ArrayHelper;
 /**
  * RtSearch represents the model behind the search form of `app\models\Rt`.
  */
@@ -60,19 +61,33 @@ class RtSearch extends Rt
         // grid filtering conditions
         $query->andFilterWhere([
             // 'id' => $this->id,
-            // 'ketua' => $this->ketua ? Warga::find()->where(['and', ['like', 'nama_warga', $this->ketua], ['id_rw' => $id_rw]])->one()->id : $this->ketua,
-            // 'wakil' => $this->wakil,
-            // 'sekretaris' => $this->sekretaris,
-            // 'bendahara' => $this->bendahara,
         ]);
 
-        $query->andFilterWhere(
-            ['like', 'nama_rt', $this->nama_rt],
-            // ['like', 'ketua', Warga::find()->where(['and', ['like', 'nama_warga', $this->ketua], ['id_rw' => $id_rw]])->one()->id_warga],
-        );
+        $query->andFilterWhere(['like', 'nama_rt', $this->nama_rt])
+            ->andFilterWhere(['in', 'ketua', $this->getFilterNama($this->ketua, 'ketua')])
+            ->andFilterWhere(['in', 'wakil', $this->getFilterNama($this->wakil, 'wakil')])
+            ->andFilterWhere(['in', 'sekretaris', $this->getFilterNama($this->sekretaris, 'sekretaris')])
+            ->andFilterWhere(['in', 'bendahara', $this->getFilterNama($this->bendahara, 'bendahara')]);
 
         return $dataProvider;
     }
 
-    // public function 
+    public function getFilterNama($attribute, $field)
+    {
+        if (!empty(trim($attribute)) && !empty(trim($field))) {
+            $id_existing = ArrayHelper::map(self::find()->all(), 'id', $field);
+            $id_warga = Warga::find()->select('id')
+                                     ->andWhere(['in', 'id', $id_existing])
+                                     ->andWhere(['LIKE', 'nama_warga', $attribute])
+                                     ->all();
+
+            $arr_id = ArrayHelper::map($id_warga, 'id', 'id');
+            if ($arr_id) {
+                return $arr_id;
+            }
+            return false;
+        }
+
+        return null;
+    }
 }

@@ -54,6 +54,18 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
             $(".box-body").addClass("hidden-background");
         }
 
+        function endLoading() {
+            $(".loading").hide();
+            $(".box-body").removeClass("hidden-background");
+        }
+
+        $(document).on("pjax:beforeSend", function() {
+            showLoading();
+            $(document).on("pjax:complete", function() {
+                endLoading();
+            });
+        });
+
         $(document).on("submit", "form", function() {
             $(this).find(":submit").attr("disabled", true).html("<span class=\'fa fa-spin fa-spinner\'></span>Proses");
         });

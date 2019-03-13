@@ -40,14 +40,16 @@ class RtController extends Controller
      */
     public function actionIndex($id = null)
     {
-        // $searchModel = new RtSearch();
-        // $dataProvider = $searchModel->search($id, Yii::$app->request->queryParams);
+        $searchModel = new RtSearch();
+        $dataProvider = $searchModel->search($id, Yii::$app->request->queryParams);
         $data_rt = Rt::find()->where(['id_rw' => $id])->all();
 
         $list_rw = Rw::find()->indexBy('id')->all();
 
         return $this->render('index', [
             'id' => $id,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
             'data_rt' => $data_rt,
             'list_rw' => $list_rw,
         ]);
@@ -139,7 +141,6 @@ class RtController extends Controller
         return $this->render('update', [
             'model' => $model,
             'list_warga_rt' => $list_warga_rt,
-            'id_rw' => $model->id_rw,
         ]);
     }
 

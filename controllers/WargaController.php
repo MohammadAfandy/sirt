@@ -13,6 +13,7 @@ use yii\web\UploadedFile;
 use app\models\Rt;
 use app\models\Rw;
 use app\models\Keluarga;
+use yii\helpers\ArrayHelper;
 /**
  * WargaController implements the CRUD actions for Warga model.
  */
@@ -70,7 +71,7 @@ class WargaController extends Controller
     {
         $model = new Warga();
 
-        $list_kk = Keluarga::find()->select(['no_kk as value', 'no_kk as label','id as id'])->asArray()->all();
+        $list_kk = ArrayHelper::map(Keluarga::find()->all(), 'id', 'no_kk');
         $list_rt = Rt::find()->indexBy('id')->all();
         $list_rw = Rw::find()->indexBy('id')->all();
 
@@ -121,7 +122,7 @@ class WargaController extends Controller
     {
         $model = $this->findModel($id);
 
-        $list_kk = Keluarga::find()->select(['no_kk as value', 'no_kk as label','id as id'])->asArray()->all();
+        $list_kk = ArrayHelper::map(Keluarga::find()->all(), 'id', 'no_kk');
         $list_rt = Rt::find()->indexBy('id')->all();
         $list_rw = Rw::find()->indexBy('id')->all();
 

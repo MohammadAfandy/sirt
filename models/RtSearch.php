@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use app\models\Rt;
 use app\models\Warga;
 use yii\helpers\ArrayHelper;
+use yii\db\Expression;
 /**
  * RtSearch represents the model behind the search form of `app\models\Rt`.
  */
@@ -64,28 +65,78 @@ class RtSearch extends Rt
         ]);
 
         $query->andFilterWhere(['like', 'nama_rt', $this->nama_rt])
-            ->andFilterWhere(['in', 'ketua', $this->getFilterNama($this->ketua, 'ketua')])
-            ->andFilterWhere(['in', 'wakil', $this->getFilterNama($this->wakil, 'wakil')])
-            ->andFilterWhere(['in', 'sekretaris', $this->getFilterNama($this->sekretaris, 'sekretaris')])
-            ->andFilterWhere(['in', 'bendahara', $this->getFilterNama($this->bendahara, 'bendahara')]);
+            ->andFilterWhere(['in', 'ketua', $this->getFilterFieldWarga($this->ketua, 'ketua')])
+            ->andFilterWhere(['in', 'wakil', $this->getFilterFieldWarga($this->wakil, 'wakil')])
+            ->andFilterWhere(['in', 'sekretaris', $this->getFilterFieldWarga($this->sekretaris, 'sekretaris')])
+            ->andFilterWhere(['in', 'bendahara', $this->getFilterFieldWarga($this->bendahara, 'bendahara')]);
+
+        $dataProvider->setSort([
+            'attributes' => [
+                'nama_rt',
+                'ketua' => [
+                    'asc' => [$this->getSortWarga('ketua', 'asc')],
+                    'desc' => [$this->getSortWarga('ketua', 'desc')],
+                ],
+                'wakil' => [
+                    'asc' => [$this->getSortWarga('wakil', 'asc')],
+                    'desc' => [$this->getSortWarga('wakil', 'desc')],
+                ],
+                'sekretaris' => [
+                    'asc' => [$this->getSortWarga('sekretaris', 'asc')],
+                    'desc' => [$this->getSortWarga('sekretaris', 'desc')],
+                ],
+                'bendahara' => [
+                    'asc' => [$this->getSortWarga('bendahara', 'asc')],
+                    'desc' => [$this->getSortWarga('bendahara', 'desc')],
+                ],
+            ],
+        ]);
 
         return $dataProvider;
     }
 
-    public function getFilterNama($attribute, $field)
+    public function getArrIdInField($field)
     {
-        if (!empty(trim($attribute)) && !empty(trim($field))) {
-            $id_existing = ArrayHelper::map(self::find()->all(), 'id', $field);
-            $id_warga = Warga::find()->select('id')
-                                     ->andWhere(['in', 'id', $id_existing])
-                                     ->andWhere(['LIKE', 'nama_warga', $attribute])
-                                     ->all();
+        if ($field) {
+            $arr_id = ArrayHelper::map(self::find()->all(), 'id', $field);
+            return $arr_id;
+        }
+        return null;
+    }
 
-            $arr_id = ArrayHelper::map($id_warga, 'id', 'id');
+    public function getFilterFieldWarga($attribute, $field)
+    {
+        if (!empty($attribute) && !empty(trim($field))) {
+            $arr_id_warga = Warga::find()->select('id')
+                                         ->andWhere(['in', 'id', $this->getArrIdInField($field)])
+                                         ->andWhere(['LIKE', 'nama_warga', $attribute])
+                                         ->all();
+
+            $arr_id = ArrayHelper::map($arr_id_warga, 'id', 'id');
             if ($arr_id) {
                 return $arr_id;
             }
             return false;
+        }
+
+        return null;
+    }
+
+    public function getSortWarga($field, $mode)
+    {
+        $sort = $mode === 'asc' ? SORT_ASC : SORT_DESC;
+        if (!empty($field)) {
+            $arr_id_warga = Warga::find()->select('id')
+                                        ->andWhere(['in', 'id', $this->getArrIdInField($field)])
+                                        ->orderBy(['nama_warga' => $sort])
+                                        ->all();
+
+            $arr_id_warga = ArrayHelper::map($arr_id_warga, 'id', 'id');
+
+            if ($arr_id_warga) {
+                $arr_id_warga = implode(',', $arr_id_warga);
+                return new Expression("FIELD (`ketua`, " . $arr_id_warga . ")");
+            }
         }
 
         return null;

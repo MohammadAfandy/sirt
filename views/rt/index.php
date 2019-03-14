@@ -49,28 +49,28 @@ $this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 
                 ],
                 [
                     'attribute' => 'ketua',
-                    'enableSorting' => false,
+                    // 'enableSorting' => false,
                     'value' => function($model) {
                         return Helpers::getNamaWarga($model->ketua);
                     },
                 ],
                 [
                     'attribute' => 'wakil',
-                    'enableSorting' => false,
+                    // 'enableSorting' => false,
                     'value' => function($model) {
                         return Helpers::getNamaWarga($model->wakil);
                     },
                 ],
                 [
                     'attribute' => 'sekretaris',
-                    'enableSorting' => false,
+                    // 'enableSorting' => false,
                     'value' => function($model) {
                         return Helpers::getNamaWarga($model->sekretaris);
                     },
                 ],
                 [
                     'attribute' => 'bendahara',
-                    'enableSorting' => false,
+                    // 'enableSorting' => false,
                     'value' => function($model) {
                         return Helpers::getNamaWarga($model->bendahara);
                     },

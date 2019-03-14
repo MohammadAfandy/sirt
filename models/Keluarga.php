@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "{{%keluarga}}".
@@ -46,12 +48,26 @@ class Keluarga extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'no_kk' => 'Nomor Kk',
+            'no_kk' => 'Nomor KK',
             'kepala_keluarga' => 'Kepala Keluarga',
             'anggota_keluarga' => 'Anggota Keluarga',
             'path_kk' => 'Path Kk',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_date', 'updated_date'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_date'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
         ];
     }
 }

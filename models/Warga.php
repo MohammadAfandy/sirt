@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
-
+use app\models\Rt;
 /**
  * This is the model class for table "tbl_warga".
  *
@@ -118,10 +118,43 @@ class Warga extends \yii\db\ActiveRecord
             'pendidikan' => 'Pendidikan Terakhir',
             'status_kawin' => 'Status Perkawinan',
             'path_ktp' => 'Foto KTP',
-            'id_keluarga' => 'ID Keluarga',
+            'id_keluarga' => 'No KK',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
         ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $keluarga = \app\models\Keluarga::findOne($this->id_keluarga);
+        if ($keluarga) {
+            $this->no_kk = $keluarga->no_kk;
+        }
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        $data_rt = Rt::find()->all();
+
+        if ($data_rt) {
+            $field_warga = Rt::getFieldWarga();
+            foreach ($data_rt as $rt) {
+                foreach ($field_warga as $field) {
+                    if ($rt->$field == $this->id) {
+                        $rt->$field = null;
+                    }
+                }
+                $rt->save();
+            }
+        }
+        return parent::beforeDelete();
     }
 
     public function behaviors()

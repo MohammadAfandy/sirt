@@ -42,7 +42,6 @@ class RtController extends Controller
     {
         $searchModel = new RtSearch();
         $dataProvider = $searchModel->search($id, Yii::$app->request->queryParams);
-        $data_rt = Rt::find()->where(['id_rw' => $id])->all();
 
         $list_rw = Rw::find()->indexBy('id')->all();
 
@@ -50,7 +49,6 @@ class RtController extends Controller
             'id' => $id,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'data_rt' => $data_rt,
             'list_rw' => $list_rw,
         ]);
     }

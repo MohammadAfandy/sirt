@@ -26,6 +26,12 @@ use yii\db\Expression;
  */
 class Rt extends \yii\db\ActiveRecord
 {
+    private static $field_warga = [
+        'ketua',
+        'wakil',
+        'sekretaris',
+        'bendahara',
+    ];
     /**
      * {@inheritdoc}
      */
@@ -48,6 +54,10 @@ class Rt extends \yii\db\ActiveRecord
             [['awal_periode', 'akhir_periode', 'created_date', 'updated_date'], 'safe'],
             [['nama_rt'], 'string', 'max' => 10],
             [['alamat'], 'string', 'max' => 255],
+            [['wakil', 'sekretaris', 'bendahara'], 'compare', 'compareAttribute' => 'ketua', 'operator' => '!='],
+            [['ketua', 'sekretaris', 'bendahara'], 'compare', 'compareAttribute' => 'wakil', 'operator' => '!='],
+            [['ketua', 'wakil', 'bendahara'], 'compare', 'compareAttribute' => 'sekretaris', 'operator' => '!='],
+            [['ketua', 'wakil', 'sekretaris'], 'compare', 'compareAttribute' => 'bendahara', 'operator' => '!='],
         ];
     }
 
@@ -72,6 +82,11 @@ class Rt extends \yii\db\ActiveRecord
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
         ];
+    }
+
+    public static function getFieldWarga()
+    {
+        return self::$field_warga;
     }
 
     public function behaviors()

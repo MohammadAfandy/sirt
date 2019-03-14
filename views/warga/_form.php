@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 
 use yii\helpers\ArrayHelper;
 use app\models\Warga;
+use kartik\select2\Select2;
 ?>
 
 <div class="panel-body">
@@ -65,19 +66,14 @@ use app\models\Warga;
 
         <?= $form->field($model, 'status_kawin')->dropDownList(Warga::$status_kawin, ['prompt' => '--PILIH-']) ?>
 
-        <?= $form->field($model, 'no_kk')->widget(\yii\jui\AutoComplete::classname(), [
-            'options' => ['class' => 'form-control'],
-            'clientOptions' => [
-                'source' => $list_kk,
-                'minLength' => '3',
-                'select' => new yii\web\JsExpression("function(event, ui) {
-                        $('#warga-id_keluarga').val(ui.item.id);
-                    }"
-                )
+        <?= $form->field($model, 'id_keluarga')->widget(Select2::classname(), [
+            'data' => $list_kk,
+            'language' => 'id',
+            'options' => ['placeholder' => '--PILIH--'],
+            'pluginOptions' => [
+                'allowClear' => true
             ],
-        ]) ?>
-
-        <?= Html::activeHiddenInput($model, 'id_keluarga') ?>
+        ]); ?>
 
         <?= $form->field($model, 'path_ktp')->fileInput() ?>
 

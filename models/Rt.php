@@ -32,6 +32,15 @@ class Rt extends \yii\db\ActiveRecord
         'sekretaris',
         'bendahara',
     ];
+
+    private static $seksi = [
+        'sarana_dan_prasarana',
+        'tata_kelola',
+        'kerohanian',
+        'humas',
+        'keamanan',
+        'pemuda_dan_olah_raga',
+    ];
     /**
      * {@inheritdoc}
      */
@@ -87,6 +96,20 @@ class Rt extends \yii\db\ActiveRecord
     public static function getFieldWarga()
     {
         return self::$field_warga;
+    }
+
+    public static function getSeksi()
+    {
+        return self::$seksi;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeValidate()
+    {
+        $this->seksi = trim(str_replace('\\', '', json_encode($this->seksi, JSON_NUMERIC_CHECK)), '"');
+        return parent::beforeValidate();
     }
 
     public function behaviors()

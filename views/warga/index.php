@@ -13,11 +13,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <h2 class="box-title"><?= Html::encode($this->title) ?></h2>
 </div>
 <div class="box-body">
+    <h2 class="text-center">DATA WARGA</h2>
     <p>
         <?= Html::a('Tambah Warga', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php yii\widgets\Pjax::begin(); ?>
+    <?php yii\widgets\Pjax::begin(['enablePushState' => false]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,

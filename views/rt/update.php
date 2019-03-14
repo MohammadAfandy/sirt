@@ -7,7 +7,7 @@ use app\components\Helpers;
 
 $nama_rw = Helpers::getNamaRw($model->id_rw);
 
-$this->title = 'Update RT: ' . $model->nama_rt;
+$this->title = 'Update RT: ' . $model->nama_rt . ' / ' . $nama_rw;
 $this->params['breadcrumbs'][] = ['label' => 'RT', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $nama_rw, 'url' => ['index', 'id' => $model->id_rw]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -20,6 +20,8 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $this->render('_form', [
         'model' => $model,
         'list_warga_rt' => $list_warga_rt,
+        'field_warga' => $field_warga,
+        'list_seksi' => $list_seksi,
         'nama_rw' => $nama_rw,
     ]) ?>
 

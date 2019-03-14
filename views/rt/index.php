@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 
     </div>
     <hr>
     <?php if ($id): ?>        
-        <center><h2>DAFTAR RT DI WILAYAH <?= $nama_rw ?></h2></center>
+        <h2 class="text-center">DATA RT DI WILAYAH <?= $nama_rw ?></h2>
         <p>
             <?= Html::a('Tambah RT', ['create', 'rw' => $id], ['class' => 'btn btn-success']) ?>
         </p>

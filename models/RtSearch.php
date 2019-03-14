@@ -74,20 +74,20 @@ class RtSearch extends Rt
             'attributes' => [
                 'nama_rt',
                 'ketua' => [
-                    'asc' => [$this->getSortWarga('ketua', 'asc')],
-                    'desc' => [$this->getSortWarga('ketua', 'desc')],
+                    'asc' => [$this->getSortWarga('ketua', 0)],
+                    'desc' => [$this->getSortWarga('ketua', 1)],
                 ],
                 'wakil' => [
-                    'asc' => [$this->getSortWarga('wakil', 'asc')],
-                    'desc' => [$this->getSortWarga('wakil', 'desc')],
+                    'asc' => [$this->getSortWarga('wakil', 0)],
+                    'desc' => [$this->getSortWarga('wakil', 1)],
                 ],
                 'sekretaris' => [
-                    'asc' => [$this->getSortWarga('sekretaris', 'asc')],
-                    'desc' => [$this->getSortWarga('sekretaris', 'desc')],
+                    'asc' => [$this->getSortWarga('sekretaris', 0)],
+                    'desc' => [$this->getSortWarga('sekretaris', 1)],
                 ],
                 'bendahara' => [
-                    'asc' => [$this->getSortWarga('bendahara', 'asc')],
-                    'desc' => [$this->getSortWarga('bendahara', 'desc')],
+                    'asc' => [$this->getSortWarga('bendahara', 0)],
+                    'desc' => [$this->getSortWarga('bendahara', 1)],
                 ],
             ],
         ]);
@@ -112,9 +112,9 @@ class RtSearch extends Rt
                                          ->andWhere(['LIKE', 'nama_warga', $attribute])
                                          ->all();
 
-            $arr_id = ArrayHelper::map($arr_id_warga, 'id', 'id');
-            if ($arr_id) {
-                return $arr_id;
+            $arr_id_warga = ArrayHelper::map($arr_id_warga, 'id', 'id');
+            if ($arr_id_warga) {
+                return $arr_id_warga;
             }
             return false;
         }
@@ -122,20 +122,20 @@ class RtSearch extends Rt
         return null;
     }
 
-    public function getSortWarga($field, $mode)
+    public function getSortWarga($field, $mode = 0)
     {
-        $sort = $mode === 'asc' ? SORT_ASC : SORT_DESC;
+        $sort = ($mode) ? SORT_DESC : SORT_ASC;
         if (!empty($field)) {
             $arr_id_warga = Warga::find()->select('id')
-                                        ->andWhere(['in', 'id', $this->getArrIdInField($field)])
-                                        ->orderBy(['nama_warga' => $sort])
-                                        ->all();
+                                         ->andWhere(['in', 'id', $this->getArrIdInField($field)])
+                                         ->orderBy(['nama_warga' => $sort])
+                                         ->all();
 
             $arr_id_warga = ArrayHelper::map($arr_id_warga, 'id', 'id');
 
             if ($arr_id_warga) {
                 $arr_id_warga = implode(',', $arr_id_warga);
-                return new Expression("FIELD (`ketua`, " . $arr_id_warga . ")");
+                return ($mode) ? new Expression("`$field` IS NULL, FIELD(`$field`, $arr_id_warga)") : new Expression("FIELD(`$field`, $arr_id_warga, `$field` IS NULL)");
             }
         }
 

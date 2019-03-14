@@ -115,10 +115,13 @@ class RtController extends Controller
     {
         $model = $this->findModel($id);
         $list_warga_rt = ArrayHelper::map(Warga::find()->where(['id_rt' => $model->id])->all(), 'id', 'nama_warga');
+        $field_warga = Rt::getFieldWarga();
+        $list_seksi = Rt::getSeksi();
         $data_post = Yii::$app->request->post();
 
         if ($data_post) {
             $old_path = $model->path_logo;
+            $model->seksi = null;
             $model->load($data_post);
 
             if ($model->validate()) {
@@ -139,6 +142,8 @@ class RtController extends Controller
         return $this->render('update', [
             'model' => $model,
             'list_warga_rt' => $list_warga_rt,
+            'field_warga' => $field_warga,
+            'list_seksi' => $list_seksi,
         ]);
     }
 
@@ -160,7 +165,7 @@ class RtController extends Controller
                 return [true, $dir_upload, $file_name];
             }
         }
-        return false;
+        return [false];
     }
 
     /**

@@ -49,32 +49,34 @@ use yii\bootstrap\Modal;
 
                 <?php endforeach; ?>
 
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <?= Html::button('Seksi', ['class' => 'btn btn-info btn-sm show-modal']) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <table id="tbl_seksi" class="table table-bordered">
+                            <thead>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <?php
+                Modal::begin([
+                    'id' =>'modal_seksi',
+                    'size' => 'modal-lg']);
+                echo Yii::$app->controller->renderPartial('_modal_seksi', [
+                    'model' => $model,
+                    'nama_rw' => $nama_rw,
+                    'list_warga_rt' => $list_warga_rt,
+                    'list_seksi' => $list_seksi,
+                ]);
+                Modal::end();
+                ?>
+            
             <?php endif; ?>
-
-            <div class="form-group">
-                <div class="col-sm-3 text-right">
-                    <?= Html::button('Seksi', ['class' => 'btn btn-info btn-sm show-modal']) ?>
-                </div>
-                <div class="col-sm-6">
-                    <table id="tbl_seksi" class="table table-bordered">
-                        <thead>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <?php
-            Modal::begin(['id' =>'modal_seksi', 'size' => 'modal-lg']);
-            echo Yii::$app->controller->renderPartial('_modal_seksi', [
-                'model' => $model,
-                'nama_rw' => $nama_rw,
-                'list_warga_rt' => $list_warga_rt,
-                'list_seksi' => $list_seksi,
-            ]);
-            Modal::end();
-            ?>
 
             <?= $form->field($model, 'alamat')->textarea(['rows' => 6]) ?>
 
@@ -95,7 +97,61 @@ use yii\bootstrap\Modal;
 <?php
 $this->registerJs(
     '
-    $(document).on("click", ".show-modal", function(e) {
+    initSelect();
+
+    function getListWarga()
+    {
+        var warga_existing = [];
+
+        $("select[id^=rt-]").each(function() {
+            var data = $(this).select2("data");
+            if (data.length > 0) {
+                $.each(data, function(key, value) {
+                    if (value.id != "") {
+                        warga_existing.push(value.id);
+                    }
+                });
+            }
+        });
+
+        return warga_existing;
+    }
+
+    function initSelect() {
+        var warga_existing = getListWarga();
+        $.ajax({
+            type: "POST",
+            url: "' . \yii\helpers\Url::to(['ajax-select']) . '",
+            data: {
+                id: warga_existing,
+                rt: ' . $model->id . '
+            },
+            dataType: "json",
+            beforeSend: function() { showLoading() },
+            success: function(result) {
+                $("select[id ^= rt-]").each(function() {
+                    var option = `<option value="">--PILIH--</option>`;
+                    if ($(this).val() != "") {
+                        var selected = $(this).find("option:selected");
+                        selected.each(function() {
+                            option += `<option value=` + $(this).attr("value") + ` selected>` + $(this).text() + `</option>`;
+                        });
+                    }
+                    $.each(result, function(key, value) {
+                        option += `<option value=` + key + `>` + value + `</option>`;
+                    });
+                    $(this).html(option);
+                });
+            },
+            complete: function() { endLoading() }
+        });
+    }
+
+    $("select[id^=rt-]").on("change", function() {
+        initSelect();
+    });
+
+    $(".show-modal").on("click", function(e) {
         e.preventDefault();
         $("#modal_seksi").modal("show");
     });

@@ -17,10 +17,10 @@ use yii\bootstrap\Modal;
         <?php $value_seksi = !empty($model->seksi) ? json_decode($model->seksi, true) : null; ?>
         <?php foreach ($list_seksi as $seksi): ?>
             <div class="form-group input-seksi">
-                <label class="control-label col-sm-2" id="label_seksi_<?= $seksi ?>">Seksi <?= ucwords(str_replace('_', ' ', $seksi)) ?></label>
+                <label class="control-label col-sm-2" id="label_rt-seksi_<?= $seksi ?>">Seksi <?= ucwords(str_replace('_', ' ', $seksi)) ?></label>
                 <div class="col-sm-8">
                     <?= Select2::widget([
-                        'id' => 'seksi_' . $seksi,
+                        'id' => 'rt-seksi_' . $seksi,
                         'name' => 'Rt[seksi][' . $seksi . ']',
                         'value' => isset($value_seksi[$seksi]) ? $value_seksi[$seksi] : null,
                         'data' => $list_warga_rt,
@@ -47,7 +47,7 @@ use yii\bootstrap\Modal;
 <?php
 $this->registerJs(
     '
-    cekTableSeksi();
+    getTableSeksi();
 
     function addTable(tbl_id, kolom, data)
     {
@@ -78,12 +78,12 @@ $this->registerJs(
         return true;
     }
 
-    function cekTableSeksi()
+    function getTableSeksi()
     {
         var list_seksi = [];
         var nama_seksi = [];
 
-        $(".input-seksi [id^=seksi_]").each(function() {
+        $(".input-seksi [id^=rt-seksi_]").each(function() {
             var seksi = $(this).select2("data");
             if (seksi.length > 0) {
                 list_seksi.push(seksi);
@@ -91,13 +91,12 @@ $this->registerJs(
             }
         });
 
-        $("#modal_seksi").modal("hide");
         addTable("tbl_seksi", nama_seksi, list_seksi);
     }
 
-
     $("#btn_save").on("click", function() {
-        cekTableSeksi();
+        getTableSeksi();
+        $("#modal_seksi").modal("hide");
     });
 
     ',

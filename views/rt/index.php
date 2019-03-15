@@ -9,7 +9,7 @@ $nama_rw = Helpers::getNamaRw($id);
 
 $this->title = 'RT';
 $id ? $this->params['breadcrumbs'][] = ['label' => 'RT', 'url' => ['index']] : null;
-$this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 'id' => $id]] : $this->title;
+$this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 'rw' => $id]] : $this->title;
 ?>
 
 <div class="box-header with-border">
@@ -49,31 +49,31 @@ $this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 
                 ],
                 [
                     'attribute' => 'ketua',
-                    // 'enableSorting' => false,
                     'value' => function($model) {
-                        return Helpers::getNamaWarga($model->ketua);
+                        return Helpers::getUrlWarga($model->ketua);
                     },
+                    'format' => 'raw',
                 ],
                 [
                     'attribute' => 'wakil',
-                    // 'enableSorting' => false,
                     'value' => function($model) {
-                        return Helpers::getNamaWarga($model->wakil);
+                        return Helpers::getUrlWarga($model->wakil);
                     },
+                    'format' => 'raw',
                 ],
                 [
                     'attribute' => 'sekretaris',
-                    // 'enableSorting' => false,
                     'value' => function($model) {
-                        return Helpers::getNamaWarga($model->sekretaris);
+                        return Helpers::getUrlWarga($model->sekretaris);
                     },
+                    'format' => 'raw',
                 ],
                 [
                     'attribute' => 'bendahara',
-                    // 'enableSorting' => false,
                     'value' => function($model) {
-                        return Helpers::getNamaWarga($model->bendahara);
+                        return Helpers::getUrlWarga($model->bendahara);
                     },
+                    'format' => 'raw',
                 ],
                 [
                     'class' => 'app\components\ActionColumn',
@@ -92,7 +92,7 @@ $this->registerJs(
     '
     $("#pilih_rw").on("change", function() {
         showLoading();
-        window.location.href = "' . \yii\helpers\Url::to(['index']) . '/" + this.value;
+        window.location.href = "' . \yii\helpers\Url::to(['index']) . '?rw=" + this.value;
     });
     ',
     \yii\web\View::POS_READY,

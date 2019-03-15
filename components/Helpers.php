@@ -9,6 +9,9 @@ use yii\web\UploadedFile;
 use app\models\Warga;
 use app\models\Rt;
 use app\models\Rw;
+
+use yii\helpers\Url;
+use yii\helpers\Html;
 /**
  * Class Helpers
  */
@@ -158,6 +161,20 @@ class Helpers extends \yii\base\Component
             
         }
         return $result;
+    }
+
+    /**
+     * Generate Url from id warga
+     * @param int id warga
+     * @return string url
+     */
+    public static function getUrlWarga($id) 
+    {
+        if ($id) {
+            return Html::a(self::getNamaWarga($id), Url::to(['warga/view', 'id' => $id]));   
+        }
+
+        return null;
     }
 
     /**

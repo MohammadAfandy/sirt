@@ -38,15 +38,15 @@ class RtController extends Controller
      * @param integer $id (id_rw)
      * @return mixed
      */
-    public function actionIndex($id = null)
+    public function actionIndex($rw = null)
     {
         $searchModel = new RtSearch();
-        $dataProvider = $searchModel->search($id, Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search($rw, Yii::$app->request->queryParams);
 
         $list_rw = Rw::find()->indexBy('id')->all();
 
         return $this->render('index', [
-            'id' => $id,
+            'id' => $rw,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'list_rw' => $list_rw,
@@ -196,5 +196,17 @@ class RtController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionAjaxSelect()
+    {
+        if (Yii::$app->request->isAjax) {
+            $data = Yii::$app->request->post();
+            $id = isset($data['id']) ? $data['id'] : [];
+            // print_r($data);
+            $data_select = ArrayHelper::map(Warga::find()->andWhere(['id_rt' => $data['rt']])->andWhere(['NOT IN', 'id', $id])->all(), 'id', 'nama_warga');
+
+            echo json_encode($data_select);
+        }
     }
 }

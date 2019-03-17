@@ -4,6 +4,7 @@ namespace app\components;
 
 use Yii;
 use kartik\mpdf\Pdf;
+use kongoon\orgchart\OrgChart;
 use yii\web\UploadedFile;
 
 use app\models\Warga;
@@ -122,7 +123,7 @@ class Helpers extends \yii\base\Component
         $file->send($filename);
         exit();
     }
-    
+
     /**
      * Convert date to date format Indonesia
      * @param string date

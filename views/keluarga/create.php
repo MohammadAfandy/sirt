@@ -5,16 +5,19 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Keluarga */
 
-$this->title = 'Create Keluarga';
-$this->params['breadcrumbs'][] = ['label' => 'Keluargas', 'url' => ['index']];
+$this->title = 'Tambah Keluarga';
+$this->params['breadcrumbs'][] = ['label' => 'Keluarga', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="keluarga-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="box-header with-border">
+    <h2 class="box-title"><?= Html::encode($this->title) ?></h2>
+</div>
+<div class="box-body">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'list_warga' => $list_warga,
+        'field_anggota' => $field_anggota,
     ]) ?>
 
 </div>

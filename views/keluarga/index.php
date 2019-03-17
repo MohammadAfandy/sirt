@@ -25,8 +25,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'no_kk',
-            'kepala_keluarga',
+            [
+                'attribute' => 'no_kk',
+                'value' => function($model) {
+                    return Html::a($model->no_kk, ['view', 'id' => $model->id]);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'kepala_keluarga',
+                'value' => function($model) {
+                    return Helpers::getNamaWarga($model->kepala_keluarga);
+                },
+                'format' => 'raw',
+            ],
 
             [
                 'class' => 'app\components\ActionColumn',

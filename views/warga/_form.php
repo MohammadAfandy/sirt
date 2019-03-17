@@ -26,7 +26,7 @@ use kartik\select2\Select2;
 
         <?= $form->field($model, 'jenis_kelamin')->dropDownList(['1' => 'Laki - Laki', '2' => 'Perempuan'], ['prompt' => '--PILIH-']) ?>
 
-        <?= $form->field($model, 'agama')->dropDownList(Warga::$agama, ['prompt' => '--PILIH-']) ?>
+        <?= $form->field($model, 'agama')->dropDownList(Warga::getAgama(), ['prompt' => '--PILIH-']) ?>
 
         <div class="form-group field-warga-tempat_lahir required">
             <label class="control-label col-sm-3" for="warga-tempat_lahir">Tempat / Tanggal Lahir</label>
@@ -60,22 +60,13 @@ use kartik\select2\Select2;
 
         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'pekerjaan')->dropDownList(Warga::$pekerjaan, ['prompt' => '--PILIH-']) ?>
+        <?= $form->field($model, 'pekerjaan')->dropDownList(Warga::getPekerjaan(), ['prompt' => '--PILIH-']) ?>
 
-        <?= $form->field($model, 'pendidikan')->dropDownList(Warga::$pendidikan, ['prompt' => '--PILIH-']) ?>
+        <?= $form->field($model, 'pendidikan')->dropDownList(Warga::getPendidikan(), ['prompt' => '--PILIH-']) ?>
 
-        <?= $form->field($model, 'status_kawin')->dropDownList(Warga::$status_kawin, ['prompt' => '--PILIH-']) ?>
+        <?= $form->field($model, 'status_kawin')->dropDownList(Warga::getStatusKawin(), ['prompt' => '--PILIH-']) ?>
 
-        <?= $form->field($model, 'id_keluarga')->widget(Select2::classname(), [
-            'data' => $list_kk,
-            'language' => 'id',
-            'options' => ['placeholder' => '--PILIH--'],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-        ]); ?>
-
-        <?= $form->field($model, 'path_ktp')->fileInput() ?>
+        <?= $form->field($model, 'path_ktp')->fileInput(['accept' => 'image/x-png, image/jpg, image/jpeg']) ?>
 
         <div class="form-group">
             <div class="col-sm-5 pull-right">

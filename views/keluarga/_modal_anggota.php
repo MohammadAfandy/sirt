@@ -10,20 +10,21 @@ use yii\bootstrap\Modal;
 
 <div class="box-body">
     <div class="form-horizontal">
-        <?php $value_seksi = !empty($model->seksi) ? json_decode($model->seksi, true) : null; ?>
-        <?php foreach ($list_seksi as $seksi): ?>
-            <div class="form-group input-seksi">
-                <label class="control-label col-sm-3" id="label_rt-seksi_<?= $seksi ?>">Seksi <?= ucwords(str_replace('_', ' ', $seksi)) ?></label>
-                <div class="col-sm-9">
+        <?php $value_anggota = !empty($model->anggota_keluarga) ? json_decode($model->anggota_keluarga, true) : null; ?>
+        <?php foreach ($field_anggota as $anggota): ?>
+            <div class="form-group input-anggota">
+                <label class="control-label col-sm-3" id="label_keluarga-anggota_keluarga_<?= $anggota ?>"><?= ucwords(str_replace('_', ' ', $anggota)) ?></label>
+                <div class="col-sm-8">
                     <?= Select2::widget([
-                        'id' => 'rt-seksi_' . $seksi,
-                        'name' => 'Rt[seksi][' . $seksi . ']',
-                        'value' => isset($value_seksi[$seksi]) ? $value_seksi[$seksi] : null,
-                        'data' => $list_warga_rt,
+                        'id' => 'keluarga-anggota_keluarga_' . $anggota,
+                        'name' => 'Keluarga[anggota_keluarga][' . $anggota . ']',
+                        'value' => isset($value_anggota[$anggota]) ? $value_anggota[$anggota] : null,
+                        'data' => $list_warga,
                         'language' => 'id',
                         'options' => ['placeholder' => '--PILIH--'],
                         'pluginOptions' => [
                             'allowClear' => true,
+                            // 'multiple' => $anggota == 'istri' ? false : true,
                             'multiple' => true,
                         ],
                     ]); ?>
@@ -32,7 +33,7 @@ use yii\bootstrap\Modal;
         <?php endforeach; ?>
 
         <div class="form-group">
-            <div class="col-sm-offset-11">
+            <div class="col-sm-offset-10">
                 <?= Html::button('Save', ['class' => 'btn btn-success', 'id' => 'btn_save']) ?>
             </div>
         </div>
@@ -43,7 +44,7 @@ use yii\bootstrap\Modal;
 <?php
 $this->registerJs(
     '
-    getTableSeksi();
+    getTableAnggota();
 
     function addTable(tbl_id, kolom, data)
     {
@@ -51,7 +52,7 @@ $this->registerJs(
         row_table_head = `
             <tr>
                 <th></th>
-                <th>Seksi</th>
+                <th>Hubungan</th>
                 <th>Nama</th>
             </tr>
         `;
@@ -66,7 +67,7 @@ $this->registerJs(
                 row_table_body += "</td></tr>";
             }
         } else {
-            row_table_body += "<tr><td colspan=3 class=text-center>Tidak Ada Seksi</td></tr>";
+            row_table_body += "<tr><td colspan=3 class=text-center>Tidak Ada Anggota</td></tr>";
         }
         
         $("#" + tbl_id).find("thead").html(row_table_head);
@@ -74,29 +75,30 @@ $this->registerJs(
         return true;
     }
 
-    function getTableSeksi()
+    function getTableAnggota()
     {
-        var list_seksi = [];
-        var nama_seksi = [];
+        var list_anggota = [];
+        var nama_anggota = [];
 
-        $(".input-seksi [id^=rt-seksi_]").each(function() {
-            var seksi = $(this).select2("data");
-            if (seksi.length > 0) {
-                list_seksi.push(seksi);
-                nama_seksi.push($("#label_" + $(this).attr("id")).text());
+        $(".input-anggota [id^=keluarga-anggota_keluarga_]").each(function() {
+            var anggota = $(this).select2("data");
+            console.log(anggota.length);
+            if (anggota.length > 0) {
+                list_anggota.push(anggota);
+                nama_anggota.push($("#label_" + $(this).attr("id")).text());
             }
         });
 
-        addTable("tbl_seksi", nama_seksi, list_seksi);
+        addTable("tbl_anggota", nama_anggota, list_anggota);
     }
 
     $("#btn_save").on("click", function() {
-        getTableSeksi();
-        $("#modal_seksi").modal("hide");
+        getTableAnggota();
+        $("#modal_anggota").modal("hide");
     });
 
     ',
     \yii\web\View::POS_READY,
-    'modal-rt-js'
+    'modal-keluarga-js'
 );
 ?>

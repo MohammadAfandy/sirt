@@ -70,7 +70,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
             $(this).find(":submit").attr("disabled", true).html("<span class=\'fa fa-spin fa-spinner\'></span>Proses");
         });
 
-        $(".dataTable").dataTable({
+        // $(".dataTable").dataTable({
             // "dom": "Bfrtip",
             // "buttons": [
             //     "excel", "pdf"
@@ -88,8 +88,8 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed201
             //         "previous":   "Sebelumnya",
             //     },
             // },
-            "pageLength": 20,
-        });
+            // "pageLength": 20,
+        // });
 
         ',
         \yii\web\View::POS_READY,

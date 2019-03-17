@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
             ],
             'no_ktp',
-            'no_kk',
             [
                 'attribute' => 'id_rt',
                 'filter' => ArrayHelper::map(app\models\Rt::find()->asArray()->all(), 'id', 'nama_rt'),
@@ -56,11 +55,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'agama',
-                'filter' => Warga::$agama,
+                'filter' => Warga::getAgama(),
             ],
             [
                 'attribute' => 'pekerjaan',
-                'filter' => Warga::$pekerjaan,
+                'filter' => Warga::getPekerjaan(),
             ],
             [
                 'class' => 'app\components\ActionColumn',

@@ -19,6 +19,20 @@ use yii\db\Expression;
  */
 class Keluarga extends \yii\db\ActiveRecord
 {
+
+    private static $field_anggota = [
+        'istri',
+        'anak',
+        'menantu',
+        'cucu',
+        'orang_tua',
+        'mertua',
+        'keponakan',
+        'kakak',
+        'adik',
+        'pembantu',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -33,7 +47,8 @@ class Keluarga extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['no_kk'], 'required'],
+            [['no_kk', 'kepala_keluarga'], 'required'],
+            [['no_kk'], 'number'],
             [['kepala_keluarga'], 'integer'],
             [['anggota_keluarga', 'path_kk'], 'string'],
             [['created_date', 'updated_date'], 'safe'],
@@ -51,10 +66,24 @@ class Keluarga extends \yii\db\ActiveRecord
             'no_kk' => 'Nomor KK',
             'kepala_keluarga' => 'Kepala Keluarga',
             'anggota_keluarga' => 'Anggota Keluarga',
-            'path_kk' => 'Path Kk',
+            'path_kk' => 'Foto KK',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
         ];
+    }
+
+    public static function getFieldAnggota()
+    {
+        return self::$field_anggota;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeValidate()
+    {
+        $this->anggota_keluarga = $this->anggota_keluarga ? trim(str_replace('\\', '', json_encode($this->anggota_keluarga, JSON_NUMERIC_CHECK)), '"') : null;
+        return parent::beforeValidate();
     }
 
     public function behaviors()

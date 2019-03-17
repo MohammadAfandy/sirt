@@ -17,8 +17,8 @@ class WargaSearch extends Warga
     public function rules()
     {
         return [
-            [['id', 'jenis_kelamin', 'status_kawin', 'id_keluarga'], 'integer'],
-            [['nama_warga', 'no_ktp', 'no_kk', 'agama', 'tempat_lahir', 'tgl_lahir', 'alamat', 'no_hp', 'id_rt', 'id_rw', 'email', 'pekerjaan', 'pendidikan', 'path_ktp', 'created_date', 'updated_date'], 'safe'],
+            [['id', 'jenis_kelamin', 'status_kawin'], 'integer'],
+            [['nama_warga', 'no_ktp', 'agama', 'tempat_lahir', 'tgl_lahir', 'alamat', 'no_hp', 'id_rt', 'id_rw', 'email', 'pekerjaan', 'pendidikan', 'path_ktp', 'created_date', 'updated_date'], 'safe'],
         ];
     }
 
@@ -64,14 +64,12 @@ class WargaSearch extends Warga
             'status_kawin' => $this->status_kawin,
             'id_rt' => $this->id_rt,
             'id_rw' => $this->id_rw,
-            'id_keluarga' => $this->id_keluarga,
             'created_date' => $this->created_date,
             'updated_date' => $this->updated_date,
         ]);
 
         $query->andFilterWhere(['like', 'nama_warga', $this->nama_warga])
             ->andFilterWhere(['like', 'no_ktp', $this->no_ktp])
-            ->andFilterWhere(['like', 'no_kk', $this->no_kk])
             ->andFilterWhere(['like', 'agama', $this->agama])
             ->andFilterWhere(['like', 'tempat_lahir', $this->tempat_lahir])
             ->andFilterWhere(['like', 'alamat', $this->alamat])

@@ -18,7 +18,7 @@ class KeluargaSearch extends Keluarga
     {
         return [
             [['id', 'kepala_keluarga'], 'integer'],
-            [['no_kk', 'anggota_keluarga', 'path_kk', 'created_date', 'updated_date'], 'safe'],
+            [['no_kk', 'path_kk', 'created_date', 'updated_date'], 'safe'],
         ];
     }
 
@@ -65,7 +65,6 @@ class KeluargaSearch extends Keluarga
         ]);
 
         $query->andFilterWhere(['like', 'no_kk', $this->no_kk])
-            ->andFilterWhere(['like', 'anggota_keluarga', $this->anggota_keluarga])
             ->andFilterWhere(['like', 'path_kk', $this->path_kk]);
 
         return $dataProvider;

@@ -23,14 +23,13 @@ use app\models\Rt;
  * @property string $pendidikan
  * @property int $status_kawin 1=Belum Menikah, 2=Menikah, 3=Duda/Janda
  * @property string $path_ktp path upload ktp
- * @property int $id_keluarga
  * @property string $created_date
  * @property string $updated_date
  */
 class Warga extends \yii\db\ActiveRecord
 {
 
-    static $agama = [
+    private static $agama = [
         'Islam' => 'Islam',
         'Kristen Protestan' => 'Kristen Protestan',
         'Kristen Katolik' => 'Kristen Katolik',
@@ -39,7 +38,7 @@ class Warga extends \yii\db\ActiveRecord
         'Kong Hu Cu' => 'Kong Hu Cu',
     ];
 
-    static $pekerjaan = [
+    private static $pekerjaan = [
         'Pegawai Swasta' => 'Pegawai Swasta',
         'Pegawai Negeri' => 'Pegawai Negeri',
         'Wiraswasta' => 'Wiraswasta',
@@ -47,7 +46,7 @@ class Warga extends \yii\db\ActiveRecord
         'Tidak Bekerja' => 'Tidak Bekerja',
     ];
 
-    static $pendidikan = [
+    private static $pendidikan = [
         'S3' => 'S3',
         'S2' => 'S2',
         'S1' => 'S1',
@@ -56,7 +55,7 @@ class Warga extends \yii\db\ActiveRecord
         'SD / MA' => 'SD / MA',
     ];
 
-    static $status_kawin = [
+    private static $status_kawin = [
         'Belum Menikah' => 'Belum Menikah',
         'Menikah' => 'Menikah',
         'Duda / Janda' => 'Duda / Janda',
@@ -78,7 +77,7 @@ class Warga extends \yii\db\ActiveRecord
         return [
             [['nama_warga', 'jenis_kelamin', 'agama', 'tempat_lahir', 'tgl_lahir', 'pekerjaan', 'pendidikan', 'status_kawin', 'id_rt', 'id_rw'], 'required'],
             [['nama_warga', 'tempat_lahir', 'alamat', 'no_ktp', 'email', 'no_hp'], 'trim'],
-            [['no_ktp', 'no_kk', 'alamat', 'no_ktp', 'no_hp', 'email', 'path_ktp', 'id_keluarga'], 'default', 'value' => NULL],
+            [['no_ktp', 'alamat', 'no_ktp', 'no_hp', 'email', 'path_ktp', 'id_keluarga'], 'default', 'value' => NULL],
             [['no_ktp'], 'unique'],
             [['jenis_kelamin', 'id_keluarga'], 'integer'],
             [['tgl_lahir', 'created_date', 'updated_date'], 'safe'],
@@ -91,7 +90,6 @@ class Warga extends \yii\db\ActiveRecord
             [['no_hp'], 'string', 'max' => 15],
             [['no_hp', 'no_ktp'], 'number'],
             [['path_ktp'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024000, 'tooBig' => 'Max 1 MB'],
-            [['no_kk'], 'exist', 'targetClass' => '\app\models\Keluarga'],
         ];
     }
 
@@ -104,7 +102,6 @@ class Warga extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nama_warga' => 'Nama Warga',
             'no_ktp' => 'No KTP',
-            'no_kk' => 'No KK',
             'jenis_kelamin' => 'Jenis Kelamin',
             'agama' => 'Agama',
             'tempat_lahir' => 'Tempat Lahir',
@@ -118,22 +115,29 @@ class Warga extends \yii\db\ActiveRecord
             'pendidikan' => 'Pendidikan Terakhir',
             'status_kawin' => 'Status Perkawinan',
             'path_ktp' => 'Foto KTP',
-            'id_keluarga' => 'No KK',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
         ];
     }
-    
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave($insert)
+
+    public static function getAgama()
     {
-        $keluarga = \app\models\Keluarga::findOne($this->id_keluarga);
-        if ($keluarga) {
-            $this->no_kk = $keluarga->no_kk;
-        }
-        return parent::beforeSave($insert);
+        return self::$agama;
+    }
+
+    public static function getPekerjaan()
+    {
+        return self::$pekerjaan;
+    }
+
+    public static function getPendidikan()
+    {
+        return self::$pendidikan;
+    }
+
+    public static function getStatusKawin()
+    {
+        return self::$status_kawin;
     }
 
     /**

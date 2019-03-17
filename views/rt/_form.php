@@ -50,15 +50,12 @@ use yii\bootstrap\Modal;
                 <?php endforeach; ?>
 
                 <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <?= Html::button('Seksi', ['class' => 'btn btn-info btn-sm show-modal']) ?>
-                    </div>
+                    <label class="control-label col-sm-3">Seksi</label>
                     <div class="col-sm-6">
+                        <?= Html::button(' Edit', ['class' => 'fa fa-pencil btn btn-info btn-sm pull-right show-modal']) ?>
                         <table id="tbl_seksi" class="table table-bordered">
-                            <thead>
-                            </thead>
-                            <tbody>
-                            </tbody>
+                            <thead></thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -66,7 +63,9 @@ use yii\bootstrap\Modal;
                 <?php
                 Modal::begin([
                     'id' =>'modal_seksi',
-                    'size' => 'modal-lg']);
+                    'size' => 'modal-lg',
+                    'header' => '<h2>Seksi - ' . $model->nama_rt . '/' . $nama_rw . '</h2>',
+                ]);
                 echo Yii::$app->controller->renderPartial('_modal_seksi', [
                     'model' => $model,
                     'nama_rw' => $nama_rw,
@@ -80,7 +79,7 @@ use yii\bootstrap\Modal;
 
             <?= $form->field($model, 'alamat')->textarea(['rows' => 6]) ?>
 
-            <?= $form->field($model, 'path_logo')->fileInput() ?>
+            <?= $form->field($model, 'path_logo')->fileInput(['accept' => 'image/x-png, image/jpg, image/jpeg']) ?>
 
             <div class="form-group">
                 <div class="col-sm-5 pull-right">
@@ -99,11 +98,12 @@ $this->registerJs(
     '
     initSelect();
 
+    // get semua data warga yang sudah dipilih dari semua select2
     function getListWarga()
     {
         var warga_existing = [];
 
-        $("select[id^=rt-]").each(function() {
+        $(".select2-hidden-accessible").each(function() {
             var data = $(this).select2("data");
             if (data.length > 0) {
                 $.each(data, function(key, value) {
@@ -117,6 +117,7 @@ $this->registerJs(
         return warga_existing;
     }
 
+    // get data warga selain warga yang dipilih di select2
     function initSelect() {
         var warga_existing = getListWarga();
         $.ajax({
@@ -129,7 +130,7 @@ $this->registerJs(
             dataType: "json",
             beforeSend: function() { showLoading() },
             success: function(result) {
-                $("select[id ^= rt-]").each(function() {
+                $(".select2-hidden-accessible").each(function() {
                     var option = `<option value="">--PILIH--</option>`;
                     if ($(this).val() != "") {
                         var selected = $(this).find("option:selected");
@@ -147,7 +148,7 @@ $this->registerJs(
         });
     }
 
-    $("select[id^=rt-]").on("change", function() {
+    $(".select2-hidden-accessible").on("change", function() {
         initSelect();
     });
 

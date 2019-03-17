@@ -82,13 +82,10 @@ class RtController extends Controller
             $model->load($data_post);
             $model->id_rw = $id_rw;
             if ($model->validate()) {
+                $upload = $this->uploadLogo($model, 'path_logo');
                 
-                if (!empty($model->path_logo)) {
-                    $upload = $this->uploadLogo($model, 'path_logo');
-                
-                    if ($upload[0]) {
-                        $model->path_logo = $upload[1] . $upload[2];
-                    }
+                if ($upload[0]) {
+                    $model->path_logo = $upload[1] . $upload[2];
                 }
             }
 
@@ -203,10 +200,10 @@ class RtController extends Controller
         if (Yii::$app->request->isAjax) {
             $data = Yii::$app->request->post();
             $id = isset($data['id']) ? $data['id'] : [];
-            // print_r($data);
+            $data_select = [];
             $data_select = ArrayHelper::map(Warga::find()->andWhere(['id_rt' => $data['rt']])->andWhere(['NOT IN', 'id', $id])->all(), 'id', 'nama_warga');
 
-            echo json_encode($data_select);
+            Yii::$app->response->data = json_encode($data_select);
         }
     }
 }

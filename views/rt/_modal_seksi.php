@@ -11,9 +11,9 @@ use yii\bootstrap\Modal;
 <div class="box-body">
     <div class="form-horizontal">
         <?php $value_seksi = !empty($model->seksi) ? json_decode($model->seksi, true) : null; ?>
-        <?php foreach ($list_seksi as $seksi): ?>
+        <?php foreach ($list_seksi as $nama_seksi => $seksi): ?>
             <div class="form-group input-seksi">
-                <label class="control-label col-sm-3" id="label_rt-seksi_<?= $seksi ?>">Seksi <?= ucwords(str_replace('_', ' ', $seksi)) ?></label>
+                <label class="control-label col-sm-3" id="label_rt-seksi_<?= $seksi ?>">Seksi <?= $nama_seksi ?></label>
                 <div class="col-sm-9">
                     <?= Select2::widget([
                         'id' => 'rt-seksi_' . $seksi,

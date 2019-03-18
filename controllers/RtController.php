@@ -61,8 +61,10 @@ class RtController extends Controller
      */
     public function actionView($id)
     {
+        $list_seksi = array_flip(Rt::getSeksi());
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'list_seksi' => $list_seksi,
         ]);
     }
 

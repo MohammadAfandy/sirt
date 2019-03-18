@@ -165,20 +165,6 @@ class Helpers extends \yii\base\Component
     }
 
     /**
-     * Generate Url from id warga
-     * @param int id warga
-     * @return string url
-     */
-    public static function getUrlWarga($id) 
-    {
-        if ($id) {
-            return Html::a(self::getNamaWarga($id), Url::to(['warga/view', 'id' => $id]));   
-        }
-
-        return null;
-    }
-
-    /**
      * Get Jenis Kelamin
      * @param int id
      * @return string result
@@ -195,16 +181,17 @@ class Helpers extends \yii\base\Component
     }
 
     /**
-     * Get Nama Warga
+     * Get Nama Warga with url (optional)
      * @param int id_warga
+     * @param bool url
      * @return string nama warga
      */
-    public static function getNamaWarga($id_warga) 
+    public static function getNamaWarga($id_warga, $url = false) 
     {
         $warga = Warga::findOne($id_warga);
 
         if (!empty($warga)) {
-            return $warga->nama_warga;
+            return $url ? Html::a($warga->nama_warga, Url::to(['warga/view', 'id' => $id_warga])) : $warga->nama_warga;
         }
 
         return null;

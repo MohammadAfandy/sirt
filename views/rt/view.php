@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 
 use app\components\Helpers;
 use kongoon\orgchart\OrgChart;
+use yii\bootstrap\Modal;
 
 $nama_rw = Helpers::getNamaRw($model->id_rw);
 $this->title = $model->nama_rt;
@@ -22,16 +23,31 @@ $this->params['breadcrumbs'][] = $this->title;
     <h2 class="box-title"><?= Html::encode($this->title) ?></h2>
 </div>
 <div class="box-body">
-    <div id="org-tree">
+    <?= Html::a('Kembali', ['index'], ['class' => 'btn btn-info']) ?>
+    <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        'class' => 'btn btn-danger',
+        'data' => [
+            'confirm' => 'Are you sure you want to delete this item?',
+            'method' => 'post',
+        ],
+    ]) ?>
+    <?php
+    Modal::begin(['id' =>'modal_foto', 'size' => 'modal-md']);
+    echo '<img src="" class="foto">';
+    Modal::end();
+    ?>
+    <div id="org-tree" style="display: block; margin: 0 auto 50px auto;">
+        <h3 class="text-center">STRUKTUR ORGANISASI <?= $model->nama_rt ?> / <?= $nama_rw ?></h3>
         <?php
-
         $data_seksi = [];
         $seksi = $model->seksi ? json_decode($model->seksi, true) : null;
         if ($seksi) {
             $i = 0;
             foreach ($seksi as $nama_seksi => $nama_warga) {
+                $nama = array_map(function($val) { return Helpers::getNamaWarga($val); }, $nama_warga);
                 $data_seksi[$i][0]['v'] = $nama_seksi;
-                $data_seksi[$i][0]['f'] = '<strong>'.$nama_seksi.'</strong><br>'.Helpers::getNamaWarga($nama_warga);
+                $data_seksi[$i][0]['f'] = '<strong>' . strtoupper($list_seksi[$nama_seksi]) . '</strong><hr>' . implode('<br><br>', $nama);
                 $data_seksi[$i][] = 'seksi'; 
                 $data_seksi[$i][] = $nama_seksi;
                 $i++;
@@ -40,27 +56,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $data = [
             [
-                ['v' => 'ketua', 'f' => 'Ketua RT<br>' . Helpers::getNamaWarga($model->ketua)],
+                ['v' => 'ketua', 'f' => '<strong>KETUA RT</strong><hr>' . Helpers::getNamaWarga($model->ketua)],
                 '',
                 'ketua'
             ],
             [
-                ['v' => 'wakil', 'f' => 'Wakil Ketua RT<br>' . Helpers::getNamaWarga($model->wakil)],
+                ['v' => 'wakil', 'f' => '<strong>WAKIL KETUA RT</strong><hr>' . Helpers::getNamaWarga($model->wakil)],
                 'ketua',
                 'wakil'
             ],
             [
-                ['v' => 'sekretaris', 'f' => 'Sekretaris<br>' . Helpers::getNamaWarga($model->sekretaris)],
+                ['v' => 'sekretaris', 'f' => '<strong>SEKRETARIS</strong><hr>' . Helpers::getNamaWarga($model->sekretaris)],
                 'wakil',
                 'sekretaris'
             ],
             [
-                ['v' => 'seksi', 'f' => 'Seksi'],
+                ['v' => 'seksi', 'f' => '<strong>SEKSI</strong>'],
                 'wakil',
                 'seksi'
             ],
             [
-                ['v' => 'bendahara', 'f' => 'Bendahara<br>' . Helpers::getNamaWarga($model->bendahara)],
+                ['v' => 'bendahara', 'f' => '<strong>BENDAHARA</strong><hr>' . Helpers::getNamaWarga($model->bendahara)],
                 'wakil',
                 'bendahara'
             ],
@@ -82,6 +98,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function($model) {
                         return Helpers::getNamaRw($model->id_rw);
                     },
+                ],
+                [
+                    'attribute' => 'path_logo',
+                    'value' => function($model) {
+                        return $model->path_logo ? Html::button('Lihat', ['data-img-url' => $model->path_logo, 'class' => 'btn btn-success btn-xs show-modal']) : '<span class="not-set">(Belum Upload Logo)</span>';
+                    },
+                    'format' => 'raw',
                 ],
                 [
                     'attribute' => 'ketua',
@@ -108,21 +131,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                 ],
                 'alamat',
-                'awal_periode',
-                'akhir_periode',
+                // 'awal_periode',
+                // 'akhir_periode',
             ],
         ]) ?>
     </div>
-
-    <div class="col-sm pull-right">
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </div>
-
 </div>
+
+<?php
+$this->registerJs(
+    '
+    $(document).on("click", ".show-modal", function(e) {
+        e.preventDefault();
+        $("#modal_foto").modal("show").find(".foto").attr("src", "/" + $(this).attr("data-img-url"));
+    });
+    ',
+    \yii\web\View::POS_READY,
+    'kriteria-js'
+);
+?>

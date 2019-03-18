@@ -34,12 +34,12 @@ class Rt extends \yii\db\ActiveRecord
     ];
 
     private static $seksi = [
-        'sarana_dan_prasarana',
-        'tata_kelola',
-        'kerohanian',
-        'humas',
-        'keamanan',
-        'pemuda_dan_olah_raga',
+        'Sarana Dan Prasarana' => 'sarana_dan_prasarana',
+        'Tata Kelola' => 'tata_kelola',
+        'Kerohanian' => 'kerohanian',
+        'Humas' => 'humas',
+        'Keamanan' => 'keamanan',
+        'Pemuda dan Olahraga' => 'pemuda_dan_olah_raga',
     ];
     /**
      * {@inheritdoc}
@@ -87,7 +87,7 @@ class Rt extends \yii\db\ActiveRecord
             'awal_periode' => 'Awal Periode',
             'akhir_periode' => 'Akhir Periode',
             'id_rw' => 'RW',
-            'path_logo' => 'Foto Logo',
+            'path_logo' => 'Logo',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
         ];

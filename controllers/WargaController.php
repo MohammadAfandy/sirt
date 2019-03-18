@@ -76,33 +76,21 @@ class WargaController extends Controller
         $list_rw = Rw::find()->indexBy('id')->all();
 
         $data_post = Yii::$app->request->post();
+
         if ($data_post) {
             $model->load($data_post);
-            $upload = UploadedFile::getInstance($model, 'path_ktp');
-
-            if ($upload && $model->validate()) {
-                $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
-                $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
-
-                // $dir_upload = \yii\helpers\Url::base(true) . '/uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
-                $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
-                // var_dump(is_dir($dir_upload));die();
-                if (!is_dir($dir_upload)) {
-                    // if(is_writable(\yii\helpers\Url::base(true) . '/uploads/')) {
-                    if(is_writable('uploads/')) {
-                        mkdir($dir_upload, 0755, true);
-                    }
+            if ($model->validate()) {
+                $upload = $this->uploadFoto($model, 'path_ktp');
+                
+                if ($upload[0]) {
+                    $model->path_ktp = $upload[1] . $upload[2];
                 }
-
-                $upload->saveAs($dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension);
-                $model->path_ktp = $dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension;
             }
-            // var_dump($model->attributes);die();
+
             if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
-
         return $this->render('create', [
             'model' => $model,
             'list_kk' => $list_kk,
@@ -128,27 +116,17 @@ class WargaController extends Controller
 
         $data_post = Yii::$app->request->post();
         if ($data_post) {
-            $current_image = $model->path_ktp;
+            $old_path = $model->path_ktp;
             $model->load($data_post);
-            $upload = UploadedFile::getInstance($model, 'path_ktp');
 
-            if ($upload && $model->path_ktp !== $current_image && $model->validate()) {
-                $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
-                $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
+            if ($model->validate()) {
+                $upload = $this->uploadFoto($model, 'path_ktp');
 
-                // $dir_upload = \yii\helpers\Url::base(true) . '/uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
-                $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
-
-                if (!is_dir($dir_upload)) {
-                    if(is_writable('uploads/')) {
-                        mkdir($dir_upload, 0755, true);
-                    }
+                if ($upload[0]) {
+                    $model->path_ktp = $upload[1] . $upload[2];
+                } else {
+                    $model->path_ktp = $old_path;
                 }
-
-                $upload->saveAs($dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension);
-                $model->path_ktp = $dir_upload . $model->no_ktp . '-' . str_replace(' ', '_', $model->nama_warga) . '.' . $upload->extension;
-            } else {
-                $model->path_ktp = $current_image;
             }
 
             if ($model->save()) {
@@ -162,6 +140,28 @@ class WargaController extends Controller
             'list_rt' => $list_rt,
             'list_rw' => $list_rw,
         ]);
+    }
+
+    public function uploadFoto($model, $attribute)
+    {
+        $upload = UploadedFile::getInstance($model, $attribute);
+        
+        if ($upload) {
+            $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
+            $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
+            $nama_warga = strtolower(str_replace(' ', '_', $model->nama_warga));
+            $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
+            $file_name = $model->no_ktp . '-' . $nama_warga . '.' . $upload->extension;
+
+            if (!is_dir($dir_upload) && is_writable('uploads/')) {
+                mkdir($dir_upload, 0755, true);
+            }
+
+            if ($upload->saveAs($dir_upload . $file_name)) {
+                return [true, $dir_upload, $file_name];
+            }
+        }
+        return [false];
     }
 
     /**

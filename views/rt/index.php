@@ -50,28 +50,28 @@ $this->params['breadcrumbs'][] = $id ? ['label' => $nama_rw, 'url' => ['index', 
                 [
                     'attribute' => 'ketua',
                     'value' => function($model) {
-                        return Helpers::getUrlWarga($model->ketua);
+                        return Helpers::getNamaWarga($model->ketua);
                     },
                     'format' => 'raw',
                 ],
                 [
                     'attribute' => 'wakil',
                     'value' => function($model) {
-                        return Helpers::getUrlWarga($model->wakil);
+                        return Helpers::getNamaWarga($model->wakil);
                     },
                     'format' => 'raw',
                 ],
                 [
                     'attribute' => 'sekretaris',
                     'value' => function($model) {
-                        return Helpers::getUrlWarga($model->sekretaris);
+                        return Helpers::getNamaWarga($model->sekretaris);
                     },
                     'format' => 'raw',
                 ],
                 [
                     'attribute' => 'bendahara',
                     'value' => function($model) {
-                        return Helpers::getUrlWarga($model->bendahara);
+                        return Helpers::getNamaWarga($model->bendahara);
                     },
                     'format' => 'raw',
                 ],

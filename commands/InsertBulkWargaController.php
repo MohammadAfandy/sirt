@@ -38,7 +38,7 @@ class InsertBulkWargaController extends Controller
             $warga->tempat_lahir = $faker->city;
             $warga->tgl_lahir = $faker->dateTimeThisCentury->format('Y-m-d');
             $warga->alamat = $faker->address;
-            $warga->id_rt = $faker->randomElement([5,6,7,8]);
+            $warga->id_rt = $faker->randomElement([1,2,3,4,5,6,7,8]);
             $warga->id_rw = 1;
             $warga->no_hp = $faker->phoneNumber;
             $warga->email = $faker->email;
@@ -62,6 +62,7 @@ class InsertBulkWargaController extends Controller
                 'Menikah' => 'Menikah',
                 'Duda / Janda' => 'Duda / Janda',
             ]);
+
 
             if ($warga->save()) {
                 $count++;

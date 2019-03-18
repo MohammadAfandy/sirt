@@ -24,6 +24,7 @@
         "kartik-v/yii2-mpdf": "*",
         "codemix/yii2-excelexport": "*",
         "kartik-v/yii2-widget-select2": "@dev",
+        "kongoon/yii2-orgchart": "*",
         "datatables/datatables": "*"
     },
     "require-dev": {

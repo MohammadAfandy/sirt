@@ -77,9 +77,9 @@ class Warga extends \yii\db\ActiveRecord
         return [
             [['nama_warga', 'jenis_kelamin', 'agama', 'tempat_lahir', 'tgl_lahir', 'pekerjaan', 'pendidikan', 'status_kawin', 'id_rt', 'id_rw'], 'required'],
             [['nama_warga', 'tempat_lahir', 'alamat', 'no_ktp', 'email', 'no_hp'], 'trim'],
-            [['no_ktp', 'alamat', 'no_ktp', 'no_hp', 'email', 'path_ktp', 'id_keluarga'], 'default', 'value' => NULL],
+            [['no_ktp', 'alamat', 'no_ktp', 'no_hp', 'email', 'path_ktp',], 'default', 'value' => NULL],
             [['no_ktp'], 'unique'],
-            [['jenis_kelamin', 'id_keluarga'], 'integer'],
+            [['jenis_kelamin',], 'integer'],
             [['tgl_lahir', 'created_date', 'updated_date'], 'safe'],
             [['alamat', 'path_ktp'], 'string'],
             [['nama_warga', 'email', 'pekerjaan'], 'string', 'max' => 255],

@@ -15,10 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box-body">
 
     <?= $this->render('_form', [
+    	'step' => $step,
         'model' => $model,
-        'list_kk' => $list_kk,
-        'list_rt' => $list_rt,
-        'list_rw' => $list_rw,
+        'data' => $data,
     ]) ?>
 
 </div>

@@ -229,4 +229,45 @@ class Helpers extends \yii\base\Component
         return null;
     }
 
+    /**
+     * Safe way to access array or public property from an object.
+     *
+     * @param mixed  $stack
+     * @param string $offset
+     * @param mixed  $default
+     *
+     * @return mixed
+     *
+     */
+    public static function def($stack, $offset, $default = null)
+    {
+        if (is_array($stack)) {
+            if (array_key_exists($offset, $stack)) {
+                return $stack[$offset] ? $stack[$offset] : $default;
+            }
+        } elseif (is_object($stack)) {
+            if (property_exists($stack, $offset)) {
+                return $stack->{$offset} ? $stack->{$offset} : $default;
+            } elseif ($stack instanceof ArrayAccess) {
+                return $stack[$offset] ? $stack[$offset] : $default;
+            } elseif (method_exists($stack, '__isset')) {
+                if ($stack->__isset($offset)) {
+                    if (method_exists($stack, '__get')) {
+                        return $stack->__get($offset, $default);
+                    }
+
+                    return $stack->$offset;
+                }
+            } else {
+                return self::def((array) $stack, $offset, self::value($default));
+            }
+        }
+
+        return self::value($default);
+    }
+
+    public static function value($value)
+    {
+        return $value instanceof Closure ? $value : $value;
+    }
 }

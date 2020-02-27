@@ -67,35 +67,127 @@ class WargaController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Warga();
+    // public function actionCreate()
+    // {
+    //     $model = new Warga();
 
-        $list_kk = ArrayHelper::map(Keluarga::find()->all(), 'id', 'no_kk');
+    //     $list_kk = ArrayHelper::map(Keluarga::find()->all(), 'id', 'no_kk');
+    //     $list_rt = Rt::find()->indexBy('id')->all();
+    //     $list_rw = Rw::find()->indexBy('id')->all();
+
+    //     $data_post = Yii::$app->request->post();
+
+    //     if ($data_post) {
+    //         $model->load($data_post);
+    //         if ($model->validate()) {
+    //             $upload = $this->uploadFoto($model, 'path_ktp');
+                
+    //             if ($upload[0]) {
+    //                 $model->path_ktp = $upload[1] . $upload[2];
+    //             }
+    //         }
+
+    //         if ($model->save()) {
+    //             return $this->redirect(['view', 'id' => $model->id]);
+    //         }
+    //     }
+    //     return $this->render('create', [
+    //         'model' => $model,
+    //         'list_kk' => $list_kk,
+    //         'list_rt' => $list_rt,
+    //         'list_rw' => $list_rw,
+    //     ]);
+    // }
+
+    public function actionCreate($step = null, $id = null)
+    {
+        if ($step > 3 || $step < 1 || !$step) {
+            $step = 1;
+        }
+
+        $fn = 'step' . $step;
+
+        return $this->$fn($id);
+    }
+
+    public function step1($id)
+    {
+        if ($id) {
+            $model = $this->findModelNotFinished($id, 1);
+        } else {
+            $model = new Warga();
+        }
+
+        $model->setScenario(Warga::SCENARIO_STEP1);
+
+        $post = Yii::$app->request->post();
+
+        if ($post) {
+            $model->load($post);
+            if ($model->validate()) {
+                $model->setStep(2);
+                if ($model->save()) {
+                    return $this->redirect(['create', 'step' => 2, 'id' => $model->id]);
+                }
+            }
+        }
+
+        return $this->render('create', [
+            'step' => 1,
+            'model' => $model,
+            'data' => [],
+        ]);
+    }
+
+    public function step2($id)
+    {
+        $model = $this->findModelNotFinished($id, 2);
+
+        $model->setScenario(Warga::SCENARIO_STEP2);
+
         $list_rt = Rt::find()->indexBy('id')->all();
         $list_rw = Rw::find()->indexBy('id')->all();
 
-        $data_post = Yii::$app->request->post();
+        $post = Yii::$app->request->post();
 
-        if ($data_post) {
-            $model->load($data_post);
+        if ($post) {
+            $model->load($post);
+            // var_dump($model->attributes);die;
             if ($model->validate()) {
-                $upload = $this->uploadFoto($model, 'path_ktp');
-                
-                if ($upload[0]) {
-                    $model->path_ktp = $upload[1] . $upload[2];
-                }
+                $model->saveUpload();
             }
-
             if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['create', 'step' => 3, 'id' => $model->id]);
             }
         }
+
         return $this->render('create', [
+            'step' => 2,
             'model' => $model,
-            'list_kk' => $list_kk,
-            'list_rt' => $list_rt,
-            'list_rw' => $list_rw,
+            'data' => compact('list_rt', 'list_rw'),
+        ]);
+    }
+
+    public function step3($id)
+    {
+        $model = $this->findModelNotFinished($id, 3);
+        $model->setScenario(Warga::SCENARIO_STEP3);
+        $post = Yii::$app->request->post();
+
+        if ($post) {
+            $model->load($post);
+            if ($model->validate()) {
+                $model->is_finish = 1;
+                if ($model->save()) {
+                    return $this->redirect(['index']);
+                }
+            }
+        }
+
+        return $this->render('create', [
+            'step' => 3,
+            'model' => $model,
+            'data' => [],
         ]);
     }
 
@@ -142,27 +234,29 @@ class WargaController extends Controller
         ]);
     }
 
-    public function uploadFoto($model, $attribute)
-    {
-        $upload = UploadedFile::getInstance($model, $attribute);
-        
-        if ($upload) {
-            $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
-            $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
-            $nama_warga = strtolower(str_replace(' ', '_', $model->nama_warga));
-            $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
-            $file_name = $model->no_ktp . '-' . $nama_warga . '.' . $upload->extension;
+    // public function uploadFoto($model, $attribute)
+    // {
+    //     if (!empty($model->$attribute)) {
+    //         $upload = UploadedFile::getInstance($model, $attribute);
+            
+    //         if ($upload) {
+    //             $nama_rw = strtolower(str_replace(' ', '_', Rw::findOne($model->id_rw)->nama_rw));
+    //             $nama_rt = strtolower(str_replace(' ', '_', Rt::findOne($model->id_rt)->nama_rt));
+    //             $nama_warga = strtolower(str_replace(' ', '_', $model->nama_warga));
+    //             $dir_upload = 'uploads/' . $nama_rw . '/' . $nama_rt . '/ktp/';
+    //             $file_name = $model->no_ktp . '-' . $nama_warga . '.' . $upload->extension;
 
-            if (!is_dir($dir_upload) && is_writable('uploads/')) {
-                mkdir($dir_upload, 0755, true);
-            }
+    //             if (!is_dir($dir_upload) && is_writable('uploads/')) {
+    //                 mkdir($dir_upload, 0755, true);
+    //             }
 
-            if ($upload->saveAs($dir_upload . $file_name)) {
-                return [true, $dir_upload, $file_name];
-            }
-        }
-        return [false];
-    }
+    //             if ($upload->saveAs($dir_upload . $file_name)) {
+    //                 return [true, $dir_upload, $file_name];
+    //             }
+    //         }
+    //         return [false];   
+    //     }
+    // }
 
     /**
      * Deletes an existing Warga model.
@@ -188,6 +282,20 @@ class WargaController extends Controller
     protected function findModel($id)
     {
         if (($model = Warga::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findModelNotFinished($id, $step)
+    {
+        if ((
+            $model = Warga::find()
+                ->where(['id' => $id, 'is_finish' => 0])
+                ->andWhere('step >= :step', [':step' => $step])
+                ->one()
+        ) !== null) {
             return $model;
         }
 
